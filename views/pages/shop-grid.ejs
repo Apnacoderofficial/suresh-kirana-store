@@ -1,0 +1,620 @@
+<%- include('../include/head') %>
+<title>Shopping Suresh kirana store - Fresh Produce, Dairy, and More</title>
+      <main>
+         <!-- section-->
+         <div class="mt-4">
+            <div class="container">
+               <!-- row -->
+               <div class="row">
+                  <!-- col -->
+                  <div class="col-12">
+                     <!-- breadcrumb -->
+                     <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                           <li class="breadcrumb-item"><a href="/">Home</a></li>
+                           <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                           <!-- Conditional Breadcrumb Item for 'Snacks & Munchies' or Category Name -->
+                              <% if (typeof sub !== 'undefined') { %>
+                                <!-- Breadcrumb item for Subcategory -->
+                                <li class="breadcrumb-item active" aria-current="page"><%= sub %></li>
+                              <% } else if(typeof categoryname !== 'undefined') { %>
+                                <!-- Breadcrumb item for Category -->
+                                <li class="breadcrumb-item active" aria-current="page"><%= categoryname %></li>
+                                <!-- Replace 'category.name' with the actual property containing the category name -->
+                              <% } %>
+                        </ol>
+                     </nav>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- section -->
+         <div class="mt-8 mb-lg-14 mb-8">
+            <!-- container -->
+            <div class="container">
+               <!-- row -->
+               <div class="row gx-10">
+                  <!-- col -->
+                  <aside class="col-lg-3 col-md-4 mb-6 mb-md-0">
+                     <div class="offcanvas offcanvas-start offcanvas-collapse w-md-50" tabindex="-1" id="offcanvasCategory" aria-labelledby="offcanvasCategoryLabel">
+                        <div class="offcanvas-header d-lg-none">
+                           <h5 class="offcanvas-title" id="offcanvasCategoryLabel">Filter</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body ps-lg-2 pt-lg-0">
+                           <div class="mb-8">
+                              <!-- title -->
+                              <h5 class="mb-3">Categories</h5>
+                              <!-- nav -->
+                              <ul class="nav nav-category" id="categoryCollapseMenu">
+                                <% category.forEach((category, index) => { %>
+                                  <li class="nav-item border-bottom w-100">
+                                      <a href="/" class="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#collapse<%= index %>" aria-expanded="false" aria-controls="collapse<%= index %>">
+                                          <%= category.title %>
+                                          <i class="feather-icon icon-chevron-right"></i>
+                                      </a>
+                                      <!-- accordion collapse -->
+                                      <div id="collapse<%= index %>" class="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
+                                          <div>
+                                              <ul class="nav flex-column ms-3">
+                                                  <!-- nav item -->
+                                                  <% if (category.subcategory.length > 0) { 
+                                                          category.subcategory.forEach(subcategory => { %>
+                                                              <li class="nav-item border-bottom w-100">
+                                                                  <a href="/shop?sub=<%= subcategory.name %>&id=<%= subcategory._id %>" class="nav-link"><%= subcategory.name %></a>
+                                                              </li>
+                                                          <% });
+                                                      } else { %>
+                                                          <li class="nav-item border-bottom w-100">
+                                                              <a class="nav-link">No Subcategory Found</a>
+                                                          </li>
+                                                  <% } %>                                            
+                                              </ul>
+                                          </div>
+                                      </div>
+                                  </li>
+                              <% }); %>
+                              </ul>
+                           </div>
+                           <div class="mb-8">
+                              <!-- price -->
+                              <h5 class="mb-3">Price</h5>
+                              <div>
+                                 <!-- range -->
+                                 <div id="priceRange" class="mb-3"></div>
+                                 <small class="text-muted">Price:</small>
+                                 <span id="priceRange-value" class="small"></span>
+                              </div>
+                           </div>
+                           <!-- rating -->
+                           <div class="mb-8">
+                              <h5 class="mb-3">Rating</h5>
+                              <div>
+                                 <!-- form check -->
+                                 <div class="form-check mb-2">
+                                    <!-- input -->
+                                    <input class="form-check-input" type="checkbox" value="" id="ratingFive" />
+                                    <label class="form-check-label" for="ratingFive">
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                    </label>
+                                 </div>
+                                 <!-- form check -->
+                                 <div class="form-check mb-2">
+                                    <!-- input -->
+                                    <input class="form-check-input" type="checkbox" value="" id="ratingFour" checked />
+                                    <label class="form-check-label" for="ratingFour">
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                    </label>
+                                 </div>
+                                 <!-- form check -->
+                                 <div class="form-check mb-2">
+                                    <!-- input -->
+                                    <input class="form-check-input" type="checkbox" value="" id="ratingThree" />
+                                    <label class="form-check-label" for="ratingThree">
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                    </label>
+                                 </div>
+                                 <!-- form check -->
+                                 <div class="form-check mb-2">
+                                    <!-- input -->
+                                    <input class="form-check-input" type="checkbox" value="" id="ratingTwo" />
+                                    <label class="form-check-label" for="ratingTwo">
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                    </label>
+                                 </div>
+                                 <!-- form check -->
+                                 <div class="form-check mb-2">
+                                    <!-- input -->
+                                    <input class="form-check-input" type="checkbox" value="" id="ratingOne" />
+                                    <label class="form-check-label" for="ratingOne">
+                                       <i class="bi bi-star-fill text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                       <i class="bi bi-star text-warning"></i>
+                                    </label>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="mb-8 position-relative">
+                              <!-- Banner Design -->
+                              <!-- Banner Content -->
+                              <div class="position-absolute p-5 py-8">
+                                 <h3 class="mb-0">Fresh Fruits</h3>
+                                 <p>Get Upto 25% Off</p>
+                                 <a href="#" class="btn btn-dark">
+                                    Shop Now
+                                    <i class="feather-icon icon-arrow-right ms-1"></i>
+                                 </a>
+                              </div>
+                              <!-- Banner Content -->
+                              <!-- Banner Image -->
+                              <!-- img -->
+                              <img src="../assets/images/banner/assortment-citrus-fruits.png" alt="" class="img-fluid rounded" />
+                              <!-- Banner Image -->
+                           </div>
+                        </div>
+                     </div>
+                  </aside>
+                  <section class="col-lg-9 col-md-12">
+                     <!-- card -->
+                     <!-- <div class="card mb-4 bg-light border-0">
+                        <div class="card-body p-9">
+                           <h2 class="mb-0 fs-1"></h2>
+                        </div>
+                     </div> -->
+                      <ul class="nav">
+                        <% category.forEach(categoryItem => { %>
+                          <% if (categoryItem._id == categoryid) { %>
+                          <li class="border-bottom w-100">
+                              <h1><%= categoryItem.title %></h1>   
+                              <ul class="nav flex-column sub-category-list">
+                                <% categoryItem.subcategory.forEach(subcategory => { %>
+                                  <li class="border-bottom w-100">
+                                    <a href="/shop?sub=<%= subcategory.name %>&id=<%= subcategory._id %>" class="nav-link"> <?xml version="1.0" encoding="iso-8859-1"?>
+                                      <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                                      <svg fill="#0aad0a" style="font-weight: bolder;" height="10px" width="10px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                                         viewBox="0 0 330 330" xml:space="preserve">
+                                      <path id="XMLID_222_" d="M250.606,154.389l-150-149.996c-5.857-5.858-15.355-5.858-21.213,0.001
+                                        c-5.857,5.858-5.857,15.355,0.001,21.213l139.393,139.39L79.393,304.394c-5.857,5.858-5.857,15.355,0.001,21.213
+                                        C82.322,328.536,86.161,330,90,330s7.678-1.464,10.607-4.394l149.999-150.004c2.814-2.813,4.394-6.628,4.394-10.606
+                                        C255,161.018,253.42,157.202,250.606,154.389z"/>
+                                      </svg> <%= subcategory.name %></a>
+                                  </li>
+                                <% }); %>
+                              </ul>
+                            </li>
+                            <% } %>
+                        <% }); %>
+                      </ul>
+                    
+                     <!-- list icon -->
+                     <div class="d-lg-flex justify-content-between align-items-center">
+                        <div class="mb-3 mb-lg-0">
+                           <p class="mb-0">
+                              Total 
+                              <span class="text-dark"><%- totalProducts %></span>
+                              Products found
+                           </p>
+                        </div>
+
+                        <!-- icon -->
+                        <div class="d-md-flex justify-content-between align-items-center">
+                           <div class="d-flex align-items-center justify-content-between">
+                              <!-- <div>
+                                 <a href="shop-list.html" class="text-muted me-3"><i class="bi bi-list-ul"></i></a>
+                                 <a href="shop-grid.html" class="me-3 active"><i class="bi bi-grid"></i></a>
+                                 <a href="shop-grid-3-column.html" class="me-3 text-muted"><i class="bi bi-grid-3x3-gap"></i></a>
+                              </div> -->
+                              <div class="ms-2 d-lg-none">
+                                 <a class="btn btn-outline-gray-400 text-muted" data-bs-toggle="offcanvas" href="#offcanvasCategory" role="button" aria-controls="offcanvasCategory">
+                                    <svg
+                                       xmlns="http://www.w3.org/2000/svg"
+                                       width="14"
+                                       height="14"
+                                       viewBox="0 0 24 24"
+                                       fill="none"
+                                       stroke="currentColor"
+                                       stroke-width="2"
+                                       stroke-linecap="round"
+                                       stroke-linejoin="round"
+                                       class="feather feather-filter me-2">
+                                       <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                    </svg>
+                                    Filters
+                                 </a>
+                              </div>
+                           </div>
+
+                          
+                        </div>
+                     </div>
+                     <!-- row -->
+                     <div class="row g-4 row-cols-xl-4 row-cols-lg-3 row-cols-2 row-cols-md-2 mt-2">
+                        <!-- col -->
+                        <% if(products.length > 0) { %>
+                              <% products.forEach(product => { %>
+                                <div class="col">
+                                    <!-- card -->
+                                    <div class="card card-product <% if (product.availability == 'false') { %>out-of-stock<% } %>">
+                                        <div class="card-body">
+                                            <!-- badge -->
+                                            <div class="text-center position-relative">
+                                                <div class="position-absolute top-0 start-0">
+                                                        <span class="badge bg-danger"><%- ((product.price - product.discounted_price) / product.price * 100).toFixed(2) %> %
+
+                                                          </span>
+                                                </div>
+                                                <a>
+                                                    <!-- img -->
+                                                    <img src="../../upload/<%= product.image %>" alt="Grocery Ecommerce Template" class="mb-3 img-fluid product-img" />
+                                                </a>
+                                                <!-- action btn -->
+                                                <div class="card-product-action">
+                                                    <form action="/addtowishlist" method="POST">
+                                                      <input type="hidden" name="productId" value="<%= product._id %>">
+                                                      <button type="submit" class="btn-action" data-bs-toggle="tooltip" data-bs-html="true" title="Wishlist"><i class="bi bi-heart"></i></button>
+                                                    </form>
+                                                    
+                                                    
+                                                    <!-- <a href="#!" class="btn-action" data-bs-toggle="tooltip" data-bs-html="true" title="Compare"><i class="bi bi-arrow-left-right"></i></a> -->
+                                                </div>
+                                            </div>
+                                            <!-- heading -->
+                                            <div class="text-small mb-1">
+                                                <a href="#!" class="text-decoration-none text-muted"><small>
+                                                  <% category.forEach(category => { %>
+                                                    <% if (category._id == product.category) { %>
+                                                      <%= category.title %>    
+                                                    <% } %>
+                                                  <% }); %>
+                                                </small></a>
+                                            </div>
+                                            <h2 class="fs-6"><a class="text-inherit text-decoration-none"><%- product.name %></a></h2>
+                                            <div>
+                                                <!-- rating -->
+                                                <small class="text-warning">
+                                                    <% for (let i = 0; i < product.rating; i++) { %>
+                                                        <i class="bi bi-star-fill"></i>
+                                                    <% } %>
+                                                    <% if (product.rating < 5) { %>
+                                                        <i class="bi bi-star-half"></i>
+                                                    <% } %>
+                                                </small>
+                                                <span class="text-muted small"><%= product.reviews %> <label class="form-check-label" for="ratingFour">
+                                                  <i class="bi bi-star-fill text-warning"></i>
+                                                  <i class="bi bi-star-fill text-warning"></i>
+                                                  <i class="bi bi-star-fill text-warning"></i>
+                                                  <i class="bi bi-star-fill text-warning"></i>
+                                                  <i class="bi bi-star text-warning"></i>
+                                               </label></span>
+                                            </div>
+                                            <!-- price -->
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <div>
+                                                    <span class="text-dark" style="text-decoration: line-through;">₹ <%= product.price %></span>
+                                                    <span class="text-dark" style="font-weight: bolder; font-size: 20px;">₹ <%= product.discounted_price %> 
+                                                      <small class="text-muted" style="font-size: 12px;">
+                                                        /<% unit.forEach(unit => { %>
+                                                          <% if (unit._id == product.units) { %>
+                                                            <%= unit.name %>    
+                                                          <% } %>
+                                                        <% }); %>
+                                                        
+                                                      </small></span>
+                                                    
+                                                </div>
+                                                <!-- btn -->
+                                                <div>
+                                                  <form action="/addToCartlist" method="POST">
+                                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-html="true" title="Add to Cart"><svg
+                                                      xmlns="http://www.w3.org/2000/svg"
+                                                      width="16"
+                                                      height="16"
+                                                      viewBox="0 0 24 24"
+                                                      fill="none"
+                                                      stroke="currentColor"
+                                                      stroke-width="2"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      class="feather feather-plus">
+                                                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    </svg>
+                                                    Add </button>
+                                                    </form>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                       <% }else { %>
+                        <div class="w-100" style="background-color: #fff; color: #343a40; padding: 20px; border: 1px solid #dee2e6; border-radius: 5px; text-align: center; font-family: Arial, sans-serif;">
+                          <img src="../../assets/images/no-products.jpg" alt="" srcset="" width="100%">
+                          
+                      </div>
+                      
+                        <% } %>
+                    
+                        
+                     </div>
+                     <!-- <div class="row mt-8">
+                        <div class="col">
+                           <nav>
+                              <ul class="pagination">
+                                 <li class="page-item disabled">
+                                    <a class="page-link mx-1" href="#" aria-label="Previous">
+                                       <i class="feather-icon icon-chevron-left"></i>
+                                    </a>
+                                 </li>
+                                 <li class="page-item"><a class="page-link mx-1 active" href="#">1</a></li>
+                                 <li class="page-item"><a class="page-link mx-1" href="#">2</a></li>
+
+                                 <li class="page-item"><a class="page-link mx-1" href="#">...</a></li>
+                                 <li class="page-item"><a class="page-link mx-1" href="#">12</a></li>
+                                 <li class="page-item">
+                                    <a class="page-link mx-1" href="#" aria-label="Next">
+                                       <i class="feather-icon icon-chevron-right"></i>
+                                    </a>
+                                 </li>
+                              </ul>
+                           </nav>
+                        </div>
+                     </div> -->
+                  </section>
+               </div>
+            </div>
+         </div>
+      </main>
+
+      <!-- modal -->
+      <!-- Modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-8">
+        <div class="position-absolute top-0 end-0 me-3 mt-3">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <!-- img slide -->
+            <div class="product productModal" id="productModal">
+              <div
+                class="zoom"
+                onmousemove="zoom(event)"
+                style="
+                  background-image: url(../assets/images/products/product-single-img-1.jpg);
+                "
+              >
+                <!-- img -->
+                <img
+                  src="../assets/images/products/product-single-img-1.jpg"
+                  alt=""
+            >
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-2.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../assets/images/products/product-single-img-2.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-3.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../assets/images/products/product-single-img-3.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+              <div>
+                <div
+                  class="zoom"
+                  onmousemove="zoom(event)"
+                  style="
+                    background-image: url(../assets/images/products/product-single-img-4.jpg);
+                  "
+                >
+                  <!-- img -->
+                  <img
+                    src="../assets/images/products/product-single-img-4.jpg"
+                    alt=""
+              >
+                </div>
+              </div>
+            </div>
+            <!-- product tools -->
+            <div class="product-tools">
+              <div class="thumbnails row g-3" id="productModalThumbnails">
+                <div class="col-3" class="tns-nav-active">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../assets/images/products/product-single-img-1.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img" >
+                    <!-- img -->
+                    <img
+                      src="../assets/images/products/product-single-img-2.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../assets/images/products/product-single-img-3.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="thumbnails-img">
+                    <!-- img -->
+                    <img
+                      src="../assets/images/products/product-single-img-4.jpg"
+                      alt=""
+                >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="ps-lg-8 mt-6 mt-lg-0">
+              <a href="#!" class="mb-4 d-block">Bakery Biscuits</a>
+              <h2 class="mb-1 h1">Napolitanke Ljesnjak</h2>
+              <div class="mb-4">
+                <small class="text-warning">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-half"></i></small
+                ><a href="#" class="ms-2">(30 reviews)</a>
+              </div>
+              <div class="fs-4">
+                <span class="fw-bold text-dark">$32</span>
+                <span class="text-decoration-line-through text-muted">$35</span
+                ><span
+                  ><small class="fs-6 ms-2 text-danger">26% Off</small></span
+                >
+              </div>
+              <hr class="my-6">
+              <div class="mb-4">
+                <button type="button" class="btn btn-outline-secondary">
+                  250g
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                  500g
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                  1kg
+                </button>
+              </div>
+              <div>
+                <!-- input -->
+                <!-- input -->
+                <div class="input-group input-spinner  ">
+                  <input type="button" value="-" class="button-minus  btn  btn-sm " data-field="quantity">
+                  <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input   ">
+                  <input type="button" value="+" class="button-plus btn btn-sm " data-field="quantity">
+                </div>
+              </div>
+              <div
+                class="mt-3 row justify-content-start g-2 align-items-center"
+              >
+
+                <div class="col-lg-4 col-md-5 col-6 d-grid">
+                  <!-- button -->
+                  <!-- btn -->
+                  <button type="button" class="btn btn-primary">
+                    <i class="feather-icon icon-shopping-bag me-2"></i>Add to
+                    cart
+                  </button>
+                </div>
+                <div class="col-md-4 col-5">
+                  <!-- btn -->
+                  <a
+                    class="btn btn-light"
+                    href="#"
+                    data-bs-toggle="tooltip"
+                    data-bs-html="true"
+                    aria-label="Compare"
+                    ><i class="bi bi-arrow-left-right"></i
+                  ></a>
+                  <a
+                    class="btn btn-light"
+                    href="#!"
+                    data-bs-toggle="tooltip"
+                    data-bs-html="true"
+                    aria-label="Wishlist"
+                    ><i class="feather-icon icon-heart"></i
+                  ></a>
+                </div>
+              </div>
+              <hr class="my-6">
+              <div>
+                <table class="table table-borderless">
+                  <tbody>
+                    <tr>
+                      <td>Product Code:</td>
+                      <td>FBB00255</td>
+                    </tr>
+                    <tr>
+                      <td>Availability:</td>
+                      <td>In Stock</td>
+                    </tr>
+                    <tr>
+                      <td>Type:</td>
+                      <td>Fruits</td>
+                    </tr>
+                    <tr>
+                      <td>Shipping:</td>
+                      <td>
+                        <small
+                          >01 day shipping.<span class="text-muted"
+                            >( Free pickup today)</span
+                          ></small
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../include/footer') %>

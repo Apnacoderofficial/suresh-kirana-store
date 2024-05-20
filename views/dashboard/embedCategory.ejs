@@ -1,0 +1,77 @@
+<%- include('../include/admin-header.ejs') %>
+
+         <!-- main -->
+         <main class="main-content-wrapper">
+            <!-- container -->
+            <div class="container">
+               <!-- row -->
+               <div class="row mb-8">
+                  <div class="col-md-12">
+                     <div class="d-md-flex justify-content-between align-items-center">
+                        <!-- page header -->
+                        <div>
+                           <h2><%= (type == 'edit') ? 'Edit Category ' : 'Add New Category' %></h2>
+                           <!-- breacrumb -->
+                           <nav aria-label="breadcrumb">
+                              <ol class="breadcrumb mb-0">
+                                 <li class="breadcrumb-item"><a href="/dashboard/index" class="text-inherit">Dashboard</a></li>
+                                 <li class="breadcrumb-item"><a href="/dashboard/categories" class="text-inherit">Categories</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page"><%= (type == 'edit') ? 'Edit Category ' : 'Add New Category' %></li>
+                              </ol>
+                           </nav>
+                        </div>
+                        <div>
+                           <a href="/dashboard/categories" class="btn btn-light">Back to Categories</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-12 col-12">
+                     <!-- card -->
+                     <div class="card mb-6 shadow border-0">
+                        <!-- card body -->
+                        <form action="<%= (type === 'edit') ? '/dashboard/editCategory?id=' + categories._id : '/dashboard/addCategory' %>" method="post" enctype="multipart/form-data">
+                           <div class="card-body p-6">
+                             <h4 class="mb-5 h5">Category Image</h4>
+                             <div class="mb-4 d-flex">
+                               <div class="position-relative">
+                                 <!-- Displayed Image with Editable Icon -->
+                                 <img class="image icon-shape icon-xxxl bg-light rounded-4" src="<%= categories.images ? '../upload/' + categories.images : '../assets/images/icons/bakery.svg' %>" alt="Image" />
+                                 <!-- File Upload Input and Edit Icon -->
+                                 <div class="file-upload position-absolute end-0 top-0 mt-n2 me-n1">
+                                   <input type="file" class="file-input" name="image" accept="image/*" value="<%= categories.images?categories.images:'' %>">
+                                   <span class="icon-shape icon-sm rounded-circle bg-white">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-pencil-fill text-muted" viewBox="0 0 16 16">
+                                       <!-- Edit Icon SVG -->
+                                     </svg>
+                                   </span>
+                                 </div>
+                               </div>
+                             </div>
+                             <h4 class="mb-4 h5 mt-5">Category Information</h4>
+                             <div class="row">
+                               <!-- Category Name Input -->
+                               <div class="mb-3 col-lg-12">
+                                 <label class="form-label">Category Name</label>
+                                 <input type="text" name="title" class="form-control" placeholder="Category Name" required value="<%= categories.title ? categories.title : '' %>">
+                               </div>
+                               <!-- Category Description Textarea -->
+                               <div class="mb-3 col-lg-12">
+                                 <label class="form-label">Description</label>
+                                 <textarea name="description" class="form-control" rows="5"><%= categories.description ? categories.description : '' %></textarea>
+                               </div>
+                               <!-- Submit Button -->
+                               <div class="col-lg-12">
+                                 <button type="submit" class="btn btn-primary"><%= (type === 'edit') ? 'Edit' : 'Create' %> Category</button>
+                               </div>
+                             </div>
+                           </div>
+                         </form>
+                         
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </main>
+		 <%- include('../include/admin-footer.ejs') %>

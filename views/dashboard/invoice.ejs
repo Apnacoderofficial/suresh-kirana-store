@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="Codescandy" name="author">
+      <title>Invoice</title>
+      <!-- Favicon icon-->
+<link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico">
+
+
+<!-- Libs CSS -->
+<link href="../assets/libs/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/libs/feather-webfont/dist/feather-icons.css" rel="stylesheet">
+<link href="../assets/libs/simplebar/dist/simplebar.min.css" rel="stylesheet">
+
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="../assets/css/theme.min.css">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M8S4MT3EYG"></script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag() {
+      dataLayer.push(arguments);
+   }
+   gtag("js", new Date());
+
+   gtag("config", "G-M8S4MT3EYG");
+</script>
+ <script type="text/javascript">
+   (function (c, l, a, r, i, t, y) {
+      c[a] =
+         c[a] ||
+         function () {
+            (c[a].q = c[a].q || []).push(arguments);
+         };
+      t = l.createElement(r);
+      t.async = 1;
+      t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0];
+      y.parentNode.insertBefore(t, y);
+   })(window, document, "clarity", "script", "kuc8w5o9nt");
+</script>
+
+   </head>
+
+   <body>
+      <!-- main -->
+      <!-- navbar -->
+      <!-- main wrapper -->
+      <div class="main-wrapper">
+         <!-- navbar vertical -->
+         <!-- navbar -->
+
+
+         <main class="main-content-wrapper ">
+            <!-- container -->
+            <div class="container">
+               <!-- row -->
+               <div class="row mb-8">
+                  <div class="col-md-12">
+                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+                        <div>
+                           <!-- page header -->
+                           <h2>Invoice #</h2>
+                           <!-- breacrumb -->
+                           <nav aria-label="breadcrumb">
+                              <ol class="breadcrumb mb-0">
+                                 <li class="breadcrumb-item"><a href="/" class="text-inherit">Home</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">Invoice</li>
+                              </ol>
+                           </nav>
+                        </div>
+                        <!-- button -->
+                        <div>
+                           <a href="/account-orders" class="btn btn-primary">Back to all orders</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- row -->
+               <div class="row shadow border">
+                  <div class="col-xl-12 col-12 mb-5">
+                     <!-- card -->
+                     <div class="card h-100 card-lg">
+                        <div class="card-body p-6">
+                           <div class="d-md-flex justify-content-between">
+                              <div class="d-flex align-items-center mb-2 mb-md-0">
+                                 <h2 class="mb-0">Order Id #<%= order._id.toString().slice(-5) %></h2>
+                                 <span class="badge bg-light-warning text-dark-warning ms-2"><%= order.pay %></span>
+                              </div>
+                              <!-- select option -->
+                              <div class="d-md-flex">
+                                 <!-- button -->
+                                 <div class="ms-md-3">
+                                    <a href="#" class="btn btn-secondary">Download Invoice</a>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="mt-8">
+                              <div class="row">
+                                 
+                                 <!-- address -->
+                                 <div class="col-lg-4 col-md-4 col-12">
+                                    <div class="mb-6">
+                                       <h6>Customer Details</h6>
+                                       <p class="mb-1 lh-lg">
+                                          <%= order.name %>
+                                          <br />
+                                          <%= order.email %>
+                                          <br />
+                                          <%= order.number %>
+                                       </p>
+                                       <a href="../account-settings">View Profile</a>
+                                    </div>
+                                 </div>
+                                 <!-- address -->
+                                 <div class="col-lg-4 col-md-4 col-12">
+                                    <div class="mb-6">
+                                       <h6>Shipping Address</h6>
+                                       <p class="mb-1 lh-lg">
+                                          <%= order.name %>
+                                          <br />
+                                          <%= order.address %>
+                                          <br />
+                                          India
+                                          <br />
+                                          Contact No. %= order.number %>
+                                       </p>
+                                    </div>
+                                 </div>
+                                 <!-- address -->
+                                 <div class="col-lg-4 col-md-4 col-12">
+                                    <div class="mb-6">
+                                       <h6>Order Details</h6>
+                                       <p class="mb-1 lh-lg">
+                                          Order ID:
+                                          <span class="text-dark">#<%= order._id.toString().slice(-5) %></span>
+                                          <br />
+                                          Order Date:
+                                          <span class="text-dark"> <%= new Date(order.placed_on).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %></span>
+                                          <br />
+                                          Order Total:
+                                          <span class="text-dark">₹ <%= order.total_price %></span>
+                                       </p>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-12">
+                              <div class="table-responsive">
+                                 <!-- Table -->
+                                 <table class="table mb-0 text-nowrap table-centered">
+                                    <!-- Table Head -->
+                                    <thead class="bg-light">
+                                       <tr>
+                                          <th>Products</th>
+                                          <th>Price</th>
+                                          <th>Quantity</th>
+                                          <th>Total</th>
+                                       </tr>
+                                    </thead>
+                                    <!-- tbody -->
+                                    <tbody>
+                                       <% productDetails.forEach(product => { %>
+                                          <tr>
+                                            <!-- Product Image -->
+                                            <td>
+                                              <a href="#" class="text-inherit">
+                                                <div class="d-flex align-items-center">
+                                                  <div>
+                                                    <img src="../../upload/<%= product.image %>" alt="" class="icon-shape icon-lg" />
+                                                  </div>
+                                                  <div class="ms-lg-4 mt-2 mt-lg-0">
+                                                    <!-- Product Name -->
+                                                    <h5 class="mb-0 h6"><%= product.name %></h5>
+                                                  </div>
+                                                </div>
+                                              </a>
+                                            </td>
+                                            <!-- Product Price -->
+                                            <td><span class="text-body">₹ <%= product.price %></span></td>
+                                            <!-- Product Quantity -->
+                                            <td><%= product.quantity %></td>
+                                            <!-- Total Price (Price * Quantity) -->
+                                            <td>₹ <%= product.price %></td>
+                                          </tr>
+                                        <% }) %>
+                                        <tr>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td colspan="1" class="fw-medium text-dark">
+                                             <!-- text -->
+                                             Service Fee
+                                          </td>
+                                          <td class="fw-medium text-dark">
+                                             <!-- text -->
+                                             ₹  <%= fee %>
+                                          </td>
+                                       </tr>
+                                       <tr>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td colspan="1" class="fw-medium text-dark">
+                                             <!-- text -->
+                                             Sub Total :
+                                          </td>
+                                          <td class="fw-medium text-dark">
+                                             <!-- text -->
+                                             ₹ <%= order.total_price %>
+                                          </td>
+                                       </tr>
+                                       <tr>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td class="border-bottom-0 pb-0"></td>
+                                          <td colspan="1" class="fw-medium text-dark">
+                                             <!-- text -->
+                                             Shipping Cost
+                                          </td>
+                                          <td class="fw-medium text-dark">
+                                             <!-- text -->
+                                             -
+                                          </td>
+                                       </tr>
+
+                                       <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td colspan="1" class="fw-semibold text-dark">
+                                             <!-- text -->
+                                             Grand Total
+                                          </td>
+                                          <td class="fw-semibold text-dark">
+                                             <!-- text -->
+                                             ₹ <%= order.total_price %>
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="card-body p-6">
+                           <div class="row">
+                              <div class="col-md-6 mb-4 mb-lg-0">
+                                 <h6>Payment Info</h6>
+                                 <span><%= order.method %></span>
+                              </div>
+                              <!-- <div class="col-md-6">
+                                 <h5>Notes</h5>
+                                 <textarea class="form-control mb-3" rows="3" placeholder="Write note for order"></textarea>
+                                 <a href="#" class="btn btn-primary">Save Notes</a>
+                              </div> -->
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </main>
+      </div>
+
+      <!-- Libs JS -->
+<!-- <script src="../assets/libs/jquery/dist/jquery.min.js"></script> -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/libs/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+<script src="../assets/js/theme.min.js"></script>
+
+   </body>
+</html>

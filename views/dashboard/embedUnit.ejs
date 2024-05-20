@@ -1,0 +1,60 @@
+<%- include('../include/admin-header.ejs') %>
+         <!-- main -->
+         <main class="main-content-wrapper">
+            <!-- container -->
+            <div class="container">
+               <!-- row -->
+               <div class="row mb-8">
+                  <div class="col-md-12">
+                     <div class="d-md-flex justify-content-between align-items-center">
+                        <!-- page header -->
+                        <div>
+                           <h2><%= (type == 'edit') ? 'Edit Unit' : 'Add New Unit' %></h2>
+                           <!-- breacrumb -->
+                           <nav aria-label="breadcrumb">
+                              <ol class="breadcrumb mb-0">
+                                 <li class="breadcrumb-item"><a href="#" class="text-inherit">Dashboard</a></li>
+                                 <li class="breadcrumb-item"><a href="#" class="text-inherit">Unit List</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page"><%= (type == 'edit') ? 'Edit Unit' : 'Add New Unit' %></li>
+                              </ol>
+                           </nav>
+                        </div>
+                        <div>
+                           <a href="/dashboard/unit-list" class="btn btn-light">Back to Categories</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-12 col-12">
+                     <!-- card -->
+                     <div class="card mb-6 shadow border-0">
+                        <!-- card body -->
+                        <form action="<%= (type == 'edit') ? '/dashboard/editUnit?id='+ unit._id : '/dashboard/addUnit' %>" method="post">
+							<div class="card-body p-6">
+								
+								<h4 class="mb-4 h5 mt-5">Unit's Information</h4>
+	 
+								<div class="row">
+								   <!-- input -->
+								   <div class="mb-3 col-lg-12">
+									  <label class="form-label">Unit Name</label>
+									  <input type="text" name="name" class="form-control" placeholder="Unit Name" required value="<%= unit.name?unit.name:'' %>" />
+								   </div>
+								   <div></div>
+								   <!-- input -->
+								   <div class="col-lg-12">
+									  <button type="submit" class="btn btn-primary"><%= (type == 'edit') ? 'Edit' : 'Create' %> Unit</button>
+									  <!-- <a href="#" class="btn btn-secondary ms-2">Save</a> -->
+								   </div>
+								</div>
+							 </div>
+						</form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </main>
+      </div>
+
+	  <%- include('../include/admin-footer.ejs') %>
