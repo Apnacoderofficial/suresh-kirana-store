@@ -29,5 +29,18 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 
 ---
 =======
-# Suresh-kirana-store
->>>>>>> b33664784fac420adc3ba0096e45cbec7f3a76cf
+# Suresh-kirana-store - Verion Update
+
+## Suresh Kirana Store v1.1.0
+
+- UPDATE AND FIXED ALL ISSUE RELATED TO ORDERS
+
+## Suresh Kirana Store v1.2.0
+
+- NEW VERSION WITH LESS RENDERING TIME
+
+## Suresh Kirana Store v1.2.1
+
+- FIXED ISSUE IN ADMIN DASHBOARD OF CANCELLED COUNT
+
+
