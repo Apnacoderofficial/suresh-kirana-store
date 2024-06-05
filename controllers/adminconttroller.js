@@ -8,43 +8,52 @@ const { checkAuth } = require('../middlewares/checkAuth');
 const { order } = require('./maincontroller');
 const mailer = require('./emailsender');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
+const Settings = require('../models/setting');
 
+const decodeToken = (token) => {
+  try {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      return decodedToken.data;
+  } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+  }
+};
 
 exports.dashboardIndex = async (req, res) => {
-  checkAuth(req, res, async () => {  
-  try {
-        // Fetch all users with user_type 'user'
-        const users = await User.find({ user_type: 'user' });
+  checkAuth(req, res, async () => {
+    try {
+      // Fetch relevant data
+      const orders = await Order.find();
+      const [users, completedOrders, cancelledOrders, products, categories] = await Promise.all([
+        User.find({ user_type: 'user' }).count(), // Count active users
+        Order.find({ payment_status: 'completed' }).count(), // Count completed orders
+        Order.find({ payment_status: 'cancelled' }).count(), // Count cancelled orders
+        Product.find().count(), // Count products (assuming Product model exists)
+        // Assuming Category model exists, adjust the query if needed
+        Category.find().countDocuments(), // Count categories (including subcategories if nested)
+      ]);
 
-        // Calculate the total number of users
-        const totalUsers = users.length;
+      const totalPrice = (await Order.find({ payment_status: 'completed' })).reduce(
+        (acc, order) => acc + order.total_price,
+        0
+      ); // Calculate total earnings
 
-        // Fetch all products
-        const products = await Order.find();
-
-        // Calculate the total number of products
-        const totalProducts = products.length;
-
-        // Fetch all orders
-        const orderss = await Order.find().sort({ date: -1 }).limit(5);
-        const orders = await Order.find({ payment_status: 'completed' });
-
-        // Calculate the total price of all orders
-        let totalPrice = 0;
-        orders.forEach(order => {
-            totalPrice += order.total_price;
-        });
-
-        res.render('dashboard/index', { 
-            users: users, 
-            totalUsers: totalUsers,
-            totalProducts: totalProducts,
-            orders: orderss,
-            totalPrice: totalPrice 
-        });
+      res.render('dashboard/index', {
+        totalActiveUsers: users,
+        totalCompletedOrders: completedOrders,
+        totalCancelledOrders: cancelledOrders,
+        totalProducts: products,
+        totalCategoriesAndSubcategories: categories, // Assuming categories include subcategories
+        totalPrice,
+        user: await User.findOne({ email: decodeToken(req.cookies.token).email }),orders
+      });
     } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).render('error', { error: 'Failed to fetch data' });
+      console.error('Error fetching data:', error);
+      res.status(500).render('error', { error: 'Failed to fetch data' });
     }
   });
 };
@@ -52,11 +61,16 @@ exports.dashboardIndex = async (req, res) => {
 
 
 
+
 exports.dashboardProducts = async (req, res) => {
   checkAuth(req, res, async () => {  
   try {
+    const user = await User.findOne({email:decodeToken(req.cookies.token).email});
         const products = await Product.find();
-        res.render('dashboard/products', { products: products });
+        res.render('dashboard/products', {
+           products: products,
+           user: await User.findOne({ email: decodeToken(req.cookies.token).email }) 
+        });
     } catch (error) {
         console.error('Error getting products:', error);
         res.status(500).render('error', { error: 'Failed to get products' });
@@ -69,7 +83,7 @@ exports.dashboardCategories = async (req, res) => {
   checkAuth(req, res, async () => {  
   try {
         const category = await Category.find(); // Use Category.find() instead of Categorys.find()
-        res.render('dashboard/category', { category: category }); // Pass the fetched categories to the template with the variable name "category"
+        res.render('dashboard/category', { category: category,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) }); // Pass the fetched categories to the template with the variable name "category"
     } catch (error) {
         console.error('Error getting categories:', error);
         res.status(500).render('error', { error: 'Failed to get categories' });
@@ -81,7 +95,7 @@ exports.dashboardSubcategories = async (req, res) => {
   try {
         const sub = req.query.sub; // Get the unit ID from the query parameter
         const category = sub ? await Category.find({ title : sub }) : await Category.find(); 
-        res.render('dashboard/subcategories', { category: category });
+        res.render('dashboard/subcategories', { category: category,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
     } catch (error) {
         console.error('Error getting subcategories:', error);
         res.status(500).render('error', { error: 'Failed to get subcategories' });
@@ -94,7 +108,7 @@ exports.unitList = async (req, res) => {
   checkAuth(req, res, async () => {  
   try {
         const units = await Unit.find(); // Assuming you are using Mongoose to fetch units
-        res.render('dashboard/unit-list', { units: units }); // Pass the fetched units to the template
+        res.render('dashboard/unit-list', { units: units,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) }); // Pass the fetched units to the template
     } catch (error) {
         console.error('Error getting units:', error);
         res.status(500).render('error', { error: 'Failed to get units' });
@@ -109,7 +123,7 @@ exports.dashboardOrderList = async (req, res) => {
   checkAuth(req, res, async () => {  
   try {
         const orders = await Order.find(); // Assuming you are using Mongoose to fetch orders
-        res.render('dashboard/order-list', { orders: orders }); // Pass the fetched orders to the template
+        res.render('dashboard/order-list', { orders: orders,user: await User.findOne({ email: decodeToken(req.cookies.token).email })  }); // Pass the fetched orders to the template
     } catch (error) {
         console.error('Error getting orders:', error);
         res.status(500).render('error', { error: 'Failed to get orders' });
@@ -142,7 +156,7 @@ exports.addProduct = (req, res) => {
           image,
           availability,
           price,
-          discounted_price
+          discounted_price,
         });
 
         // Save the new product to the database
@@ -162,7 +176,7 @@ exports.addProduct = (req, res) => {
       const category = await Category.find();
       const product = await Product.find();
       const unit = await Unit.find();
-      res.render('dashboard/embedProduct', { product,units: unit, category: category,type:'add' });
+      res.render('dashboard/embedProduct', { product,units: unit, category: category,type:'add',user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
     }
   });
 };
@@ -222,7 +236,7 @@ exports.editProduct = async (req, res) => {
         const categories = await Category.find();
         const units = await Unit.find();
 
-        res.render('dashboard/embedProduct', { product, categories, units, type: 'edit' });
+        res.render('dashboard/embedProduct', { product, categories,category:categories, units, type: 'edit',user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
       } catch (error) {
         console.error('Error fetching product for edit:', error);
         res.status(500).json({ error: 'Failed to fetch product for edit' });
@@ -289,7 +303,7 @@ exports.addCategory = (req, res) => {
     } else {
       // If it's a GET request, render the form to add a new category
       const categories = await Category.find();
-      res.render('dashboard/embedCategory', { categories,type:'add'});
+      res.render('dashboard/embedCategory', { categories,type:'add',user: await User.findOne({ email: decodeToken(req.cookies.token).email })});
     }
   });
 };
@@ -338,7 +352,7 @@ exports.editCategory = async (req, res) => {
           console.log('Category not found');
           return res.status(404).json({ error: 'Category not found' });
         }
-        res.render('dashboard/embedCategory', { categories:category, type: 'edit' });
+        res.render('dashboard/embedCategory', { categories:category, type: 'edit',user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
       } catch (error) {
         console.error('Error fetching category:', error);
         res.status(500).json({ error: 'Failed to fetch category for edit' });
@@ -437,7 +451,7 @@ exports.addSubcategory = async (req, res) => {
               // If it's a GET request, retrieve all categories from the database
               const categories = await Category.find();
               // Render the form to add a new subcategory, passing retrieved categories to the rendering engine
-              res.render('dashboard/embedSubcategory', { subcategory:categories,categoryId:null, categories, type: 'add' });
+              res.render('dashboard/embedSubcategory', { subcategory:categories,categoryId:null, categories,category:categories, type: 'add',user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
           } catch (error) {
               console.error('Error fetching categories:', error);
               res.status(500).json({ error: 'Failed to fetch categories' });
@@ -498,10 +512,11 @@ exports.editSubcategory = async (req, res) => {
         res.status(500).json({ error: 'Failed to update subcategory' });
       }
     } else {
+      const category = await Category.find();
       const categories = await Category.findById(categoryId);
       // Find the subcategory by its ID
       const subcategory = categories.subcategory.id(subcategoryId);
-      res.render('dashboard/embedSubcategory', { subcategory, categoryId, type: 'edit' });
+      res.render('dashboard/embedSubcategory', { subcategory, categoryId, type: 'edit',user: await User.findOne({ email: decodeToken(req.cookies.token).email }),category });
     }
   });
 };
@@ -581,7 +596,7 @@ exports.addUnit = (req, res) => {
       }
     } else {
       const unit = await Unit.find();
-      res.render('dashboard/embedUnit',{unit,type:'add'});
+      res.render('dashboard/embedUnit',{unit,type:'add',user: await User.findOne({ email: decodeToken(req.cookies.token).email })});
     }
   });
 };
@@ -610,7 +625,7 @@ exports.editUnit = (req, res) => {
     else {
       const unitId = req.query.id; // Get the unit ID from the query parameter
         const unit = unitId ? await Unit.findById(unitId) : null;
-        res.render('dashboard/embedUnit', { unit,type:'edit' });    }
+        res.render('dashboard/embedUnit', { unit,type:'edit',user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });    }
   });
 };
 
@@ -642,7 +657,7 @@ exports.dashboardVendorGrid = (req, res) => {
 exports.dashboardCustomers = async (req, res) => {
     try {
         const users = await User.find();
-        res.render('dashboard/customers', { users: users });
+        res.render('dashboard/customers', { users: users,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
     } catch (error) {
         console.error('Error getting users:', error);
         res.status(500).json({ error: 'Failed to get users' });
@@ -655,12 +670,68 @@ exports.dashboardCustomers = async (req, res) => {
 exports.dashboardReviews = async (req, res) => {
     try {
         const reviews = await Message.find();
-        res.render('dashboard/reviews', { reviews: reviews }); // Ensure to pass reviews to the template
+        res.render('dashboard/reviews', { reviews: reviews,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) }); // Ensure to pass reviews to the template
     } catch (error) {
         console.error('Error getting reviews:', error);
         res.status(500).render('error', { error: 'Failed to get reviews' });
     }
+   
 };
+exports.dashboardSettings = async (req, res) => {
+  if (req.method === 'POST') {
+    try {
+      // Extract data from the request body
+      const {
+        applicationName,
+        contactNumber,
+        email,
+        address,
+        serviceFee,
+        deliveryCharges,
+        service,
+        host,
+        port,
+        secure,
+        user,
+        pass
+      } = req.body;
+
+      // Construct the update object
+      const updateData = {};
+      if (applicationName) updateData.applicationName = applicationName;
+      if (contactNumber) updateData.contactNumber = contactNumber;
+      if (email) updateData.email = email;
+      if (address) updateData.address = address;
+      if (serviceFee !== undefined) updateData.serviceFee = serviceFee;
+      if (deliveryCharges !== undefined) updateData.deliveryCharges = deliveryCharges;
+      if (service) updateData.service = service;
+      if (host) updateData.host = host;
+      if (port !== undefined) updateData.port = port;
+      if (secure !== undefined) updateData.secure = secure === 'on'; 
+      if (user) updateData.user = user;
+      if (pass) updateData.pass = pass;
+
+      // Update the settings document based on the provided _id
+      await Settings.findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
+
+      // Redirect or send a response
+      res.redirect('/dashboard/settings');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      res.status(500).render('error', { error: 'Failed to update settings' });
+    }
+  } else {
+    try {
+      const setting = await Settings.findOne().exec();
+    const user = await User.findOne({ email: decodeToken(req.cookies.token).email }).exec();
+      res.render('dashboard/settings', { type: 'edit', user: user, setting: setting });
+    } catch (error) {
+      console.error('Error getting settings:', error);
+      res.status(500).render('error', { error: 'Failed to get settings' });
+    }
+  }
+};
+
 
 // Create a new user
 exports.createUser = async (req, res) => {
@@ -772,7 +843,7 @@ exports.createUser = async (req, res) => {
               const order = await Order.findById(orderId);
   
               // Render the dashboard view with the order data for editing
-              res.render('dashboard/embedorder', { order:order });
+              res.render('dashboard/embedorder', { order:order,user: await User.findOne({ email: decodeToken(req.cookies.token).email }) });
               // res.json(orderId);
           }
       } catch (error) {

@@ -1,4 +1,4 @@
-<!-- Shop Cart -->
+<!-- Shop Cart
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
 	<div class="offcanvas-header border-bottom">
@@ -10,19 +10,14 @@
 	</div>
 	<div class="offcanvas-body">
 		<div>
-			<!-- alert -->
-			<!-- <div class="alert alert-danger p-2" role="alert">
+		 <div class="alert alert-danger p-2" role="alert">
 				You’ve got FREE delivery. Start
 				<a href="#!" class="alert-link">checkout now!</a>
-			</div> -->
+			</div>
 			<ul class="list-group list-group-flush">
-				<!-- list group -->
-				
-				<!-- list group -->
 				<% if (cartProducts.length > 0) { %>
 					<% cartProducts.forEach(product => { %>
 						<li class="list-group-item py-3 ps-0">
-						  <!-- row -->
 						  <div class="row align-items-center">
 							<div class="col-6 col-md-6 col-lg-7">
 							  <div class="d-flex">
@@ -37,7 +32,6 @@
 										
 									<% } %>
 								<% }); %>
-								  <!-- text -->
 								  <div class="mt-2 small lh-1">
 									<a href="/removeFromCart/<%= product._id %>" class="text-decoration-none text-inherit">
 									  <span class="me-1 align-text-bottom">
@@ -55,14 +49,8 @@
 							  </div>
 							</div>
 					
-							<!-- input group -->
 							<div class="col-4 col-md-3 col-lg-3">
-								<!-- Input spinner for quantity -->
 								<div class="input-group input-spinner">
-									<!-- Decrease quantity button -->
-									<!-- <button type="button" class="button-minus btn btn-sm" data-field="quantity">-</button> -->
-									
-									<!-- Quantity input field -->
 									<% let quantity = 0; %>
 									<% cartItems.forEach(cartItem => { %>
 										<% if (cartItem.productId.toString() === product._id.toString()) { %>
@@ -78,17 +66,14 @@
 											<% } %>
 										<% }); %>
 									</span>
-									
-									<!-- Increase quantity button (inside a form for submission) -->
-									<!-- <form id="addToCartForm_<%= product._id %>" action="/addToCartlist" method="POST">
+									<form id="addToCartForm_<%= product._id %>" action="/addToCartlist" method="POST">
 										<input type="hidden" name="productId" value="<%= product._id %>">
 										<button type="submit" class="button-plus btn btn-sm" data-field="quantity">+</button>
-									</form> -->
+									</form>
 								</div>
 							</div>
 							
 							
-							<!-- price -->
 							<div class="col-2 text-lg-end text-start text-md-end col-md-2">
 							  <span class="fw-bold text-danger">₹ <%= product.discounted_price * quantity %>/-</span>
 							  <div class="text-decoration-line-through text-muted small">₹ <%= product.price %></div>
@@ -102,11 +87,10 @@
 					
 				  
 			</ul>
-			<!-- btn -->
 			<div class="d-flex justify-content-between mt-4">
 				<a href="/shop-cart" class="btn btn-primary">Continue Shopping</a>
 				<a href="#!" class="btn btn-dark">Update Cart</a>
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->

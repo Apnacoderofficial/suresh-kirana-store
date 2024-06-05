@@ -47,14 +47,13 @@
               </ul>
             </div>
             <div class="col-6 col-sm-6 col-md-6">
-              <h6 class="mb-4">For Consumers</h6>
+              <h6 class="mb-4">Contact Details</h6>
               <ul class="nav flex-column">
                     <!-- list -->
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">Payments</a></li>
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">Shipping</a></li>
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">Product Returns</a></li>
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">FAQ</a></li>
-                <li class="nav-item mb-2"><a href="shop-checkout" class="nav-link">Shop Checkout</a></li>
+                <li class="nav-item mb-2"><a href="tel:+917269053249" class="nav-link"><b>Contact No.:</b> +91 7269053249</a></li>
+                <li class="nav-item mb-2"><a href="mailto:info@sureshkiranastore.in" class="nav-link"><b>Email:</b> info@sureshkiranastore.in</a></li>
+                <li class="nav-item mb-2"><a href="#!" class="nav-link"><b>Address:</b> Suresh kirana store , Rahmat Nagar main market hata Kushinagar 274203</a></li>
+                <li class="nav-item mb-2"><a href="https://wa.me/917269053249" class="nav-link"><b>Whatsapp No.:</b> +91 7269053249</a></li>
               </ul>
             </div>
             <!-- <div class="col-6 col-sm-6 col-md-3">
@@ -68,12 +67,12 @@
               </ul>
             </div> -->
             <!-- <div class="col-6 col-sm-6 col-md-3">
-              <h6 class="mb-4">Freshcart programs</h6>
+              <h6 class="mb-4">Suresh Kirana store programs</h6>
               <ul class="nav flex-column">
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">Freshcart programs</a></li>
+                <li class="nav-item mb-2"><a href="#!" class="nav-link">Suresh Kirana store programs</a></li>
                 <li class="nav-item mb-2"><a href="#!" class="nav-link">Gift Cards</a></li>
                 <li class="nav-item mb-2"><a href="#!" class="nav-link">Promos & Coupons</a></li>
-                <li class="nav-item mb-2"><a href="#!" class="nav-link">Freshcart Ads</a></li>
+                <li class="nav-item mb-2"><a href="#!" class="nav-link">Suresh Kirana store Ads</a></li>
                 <li class="nav-item mb-2"><a href="#!" class="nav-link">Careers</a></li>
               </ul>
             </div> -->
@@ -98,7 +97,7 @@
           </div>
           <div class="col-lg-7 mt-4 mt-md-0">
             <ul class="list-inline mb-0 text-lg-end text-center">
-              <li class="list-inline-item mb-2 mb-md-0 text-dark">Get deliveries with FreshCart</li>
+              <li class="list-inline-item mb-2 mb-md-0 text-dark">Get deliveries with Suresh Kirana store</li>
               <li class="list-inline-item">
                 <a href="./assets/apk/Suresh-kirana-store.apk" download>
                   <img src="./assets/images/appbutton/googleplay-btn.svg" alt="Download from Google Play"
@@ -285,9 +284,128 @@ storeLocationInCache();
     }, 'google_translate_element');  // Specify the ID of the HTML element to render the widget
   }
 </script>
+
+<script src="../../assets/js/custom.js"></script>
+
+
+
+
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-          <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+  .wrapper {
+  position: fixed;
+  bottom: 50px;
+  right: -370px;
+  max-width: 345px;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px 25px 22px;
+  transition: right 0.3s ease;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.wrapper.show {
+  right: 20px;
+}
+.wrapper header {
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+}
+header i {
+  color: green;
+  font-size: 32px;
+}
+header h2 {
+  color: green;
+  font-weight: 500;
+}
+.wrapper .data {
+  margin-top: 16px;
+}
+.wrapper .data p {
+  color: #333;
+  font-size: 16px;
+}
+.data p a {
+  color: green;
+  text-decoration: none;
+}
+.data p a:hover {
+  text-decoration: underline;
+}
+.wrapper .buttons {
+  margin-top: 16px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.buttons .button {
+  border: none;
+  color: #fff;
+  padding: 8px 0;
+  border-radius: 4px;
+  background: green;
+  cursor: pointer;
+  width: calc(100% / 2 - 10px);
+  transition: all 0.2s ease;
+}
+.buttons #acceptBtn:hover {
+  background-color:  green;
+}
+#declineBtn {
+  border: 2px solid green;
+  background-color: #fff;
+  color: green;
+}
+#declineBtn:hover {
+  background-color: green;
+  color: #fff;
+}
+</style>
+<link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />  
+<div class="wrapper">
+      <header>
+        <i class="bx bx-cookie"></i>
+        <h2>Cookies Consent</h2>
+      </header>
+
+      <div class="data">
+        <p>This website use cookies to help you have a superior and more relevant browsing experience on the website. <a href="#"> Read more...</a></p>
+      </div>
+
+      <div class="buttons">
+        <button class="button" id="acceptBtn">Accept</button>
+        <button class="button" id="declineBtn">Decline</button>
+      </div>
+    </div>
+<script>
+  const cookieBox = document.querySelector(".wrapper"),
+  buttons = document.querySelectorAll(".button");
+
+const executeCodes = () => {
+  //if cookie contains codinglab it will be returned and below of this code will not run
+  if (document.cookie.includes("codinglab")) return;
+  cookieBox.classList.add("show");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      cookieBox.classList.remove("show");
+
+      //if button has acceptBtn id
+      if (button.id == "acceptBtn") {
+        //set cookies for 1 month. 60 = 1 min, 60 = 1 hours, 24 = 1 day, 30 = 30 days
+        document.cookie = "cookieBy= codinglab; max-age=" + 60 * 60 * 24 * 30;
+      }
+    });
+  });
+};
+
+//executeCodes function will be called on webpage load
+window.addEventListener("load", executeCodes);
+</script>
           
 
 

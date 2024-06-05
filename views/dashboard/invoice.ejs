@@ -126,7 +126,7 @@
                                           <br />
                                           India
                                           <br />
-                                          Contact No. %= order.number %>
+                                          Contact No. <%= order.number %>
                                        </p>
                                     </div>
                                  </div>
@@ -165,7 +165,9 @@
                                     </thead>
                                     <!-- tbody -->
                                     <tbody>
-                                       <% productDetails.forEach(product => { %>
+                                       <% 
+                                       let totalprice = 0;
+                                       productDetails.forEach(product => { %>
                                           <tr>
                                             <!-- Product Image -->
                                             <td>
@@ -198,7 +200,7 @@
                                           </td>
                                           <td class="fw-medium text-dark">
                                              <!-- text -->
-                                             ₹  <%= fee %>
+                                             ₹  <%= order.serviceFee %>
                                           </td>
                                        </tr>
                                        <tr>
@@ -218,11 +220,11 @@
                                           <td class="border-bottom-0 pb-0"></td>
                                           <td colspan="1" class="fw-medium text-dark">
                                              <!-- text -->
-                                             Shipping Cost
+                                             Delivery Charge
                                           </td>
                                           <td class="fw-medium text-dark">
                                              <!-- text -->
-                                             -
+                                             ₹ <%= order.deliveryCharges %>
                                           </td>
                                        </tr>
 

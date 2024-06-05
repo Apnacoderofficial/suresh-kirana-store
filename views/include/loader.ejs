@@ -1,0 +1,76 @@
+<style>
+    /* Your existing CSS can go here */
+  
+    /* Enhanced Loader Styles */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.9);
+      z-index: 9999;
+      flex-direction: column;
+      transition: opacity 0.5s ease;
+    }
+  
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+  
+    .spinner-container {
+      position: relative;
+      width: 6rem;
+      height: 6rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .spinner-border {
+      position: absolute;
+      width: 6rem;
+      height: 6rem;
+    }
+  
+    .spinner-container img {
+      position: absolute;
+      width: 3rem;
+      height: 3rem;
+    }
+  
+    .loader-text {
+      margin-top: 20px;
+      font-size: 1.25rem;
+      color: #333;
+    }
+  
+    /* Subtle Background Animation */
+    @keyframes fadeBackground {
+      0% { background-color: rgba(255, 255, 255, 0.9); }
+      50% { background-color: rgba(240, 240, 240, 0.9); }
+      100% { background-color: rgba(255, 255, 255, 0.9); }
+    }
+  
+    #loader {
+      animation: fadeBackground 3s infinite;
+    }
+  </style>
+<div id="loader">
+    <div class="spinner-container">
+      <div class="spinner-border text-primary" role="status"></div>
+      <img src="../../assets/images/favicon/favicon.png" alt="Logo">
+    </div>
+    <div class="loader-text">Loading, please wait...</div>
+  </div>
+  <script>
+    // Hide the loader when the page is fully loaded
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      loader.style.display = 'none';
+    });
+  </script>

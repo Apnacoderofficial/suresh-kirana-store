@@ -1,0 +1,107 @@
+<%- include('../include/admin-header.ejs') %>
+			<!-- main -->
+			<main class="main-content-wrapper">
+				<div class="container">
+					<div class="row mb-8">
+						<div class="col-md-12">
+							<div>
+								<!-- page header -->
+								<h2>Settings</h2>
+								<!-- breacrumb -->
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0">
+										<li class="breadcrumb-item"><a href="#" class="text-inherit">Dashboard</a></li>
+										<li class="breadcrumb-item active" aria-current="page">Settings</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+					<!-- row -->
+					<div class="row">
+						<div class="col-xl-12 col-12 mb-5">
+							<div class="col-lg-12 col-12">
+								<!-- card -->
+								<div class="card mb-6 shadow border-0">
+								   <!-- card body -->
+								   <form action="/dashboard/settings/<%= setting._id %>" method="post">
+
+									  <div class="card-body p-6">
+										
+										<div class="row">
+										  <!-- Category Name Input -->
+										  <div class="mb-3 col-lg-12">
+											<label class="form-label">Application Name</label>
+											<input type="text" name="applicationName" class="form-control" placeholder="Application Name" required value="<%= setting.applicationName %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Contact Number</label>
+											<input type="text" name="contactNumber" class="form-control" placeholder="Contact Number" required value="<%= setting.contactNumber %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Email</label>
+											<input type="email" name="email" class="form-control" placeholder="Email" required value="<%= setting.email %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Address</label>
+											<input type="text" name="address" class="form-control" placeholder="Address" required value="<%= setting.address %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Service Fee</label>
+											<input type="number" name="serviceFee" class="form-control" placeholder="Service Fee" required value="<%= setting.serviceFee %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Delivery Charges</label>
+											<input type="number" name="deliveryCharges" class="form-control" placeholder="Delivery Charges" required value="<%= setting.deliveryCharges %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Email Service</label>
+											<input type="text" name="service" class="form-control" placeholder="Email Service" required value="<%= setting.service %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">SMTP Host</label>
+											<input type="text" name="host" class="form-control" placeholder="SMTP Host" required value="<%= setting.host %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">SMTP Port</label>
+											<input type="number" name="port" class="form-control" placeholder="SMTP Port" required value="<%= setting.port %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">Secure Connection</label>
+											<input type="checkbox" name="secure" class="form-check-input" <%= setting.secure ? 'checked' : '' %>>
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">SMTP User</label>
+											<input type="text" name="user" class="form-control" placeholder="SMTP User" required value="<%= setting.user %>">
+										</div>
+								
+										<div class="mb-3 col-lg-12">
+											<label class="form-label">SMTP Password</label>
+											<input type="password" name="pass" class="form-control" placeholder="SMTP Password" required value="<%= setting.pass %>">
+										</div>
+										  <!-- Submit Button -->
+										  <div class="col-lg-12">
+											<button type="submit" class="btn btn-primary">Update Settings</button>
+										  </div>
+										</div>
+									  </div>
+									</form>
+									
+								</div>
+							 </div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+<%- include('../include/admin-footer.ejs') %>

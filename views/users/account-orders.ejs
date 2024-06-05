@@ -56,16 +56,26 @@
                                     <% Orders.forEach(order => { %>
                                        <tr>
                                          <td class="align-middle border-top-0 w-0 table-cell-20">
-                                           <a href="#"><img src="../assets/images/icons/package.svg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
+                                           <a ><img src="../assets/images/icons/package.svg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
                                          </td>
                                          <td class="align-middle border-top-0 table-cell-20">
-                                            <a href="#" class="text-inherit">Order #<%= order._id.toString().slice(-5) %></a>
+                                            <a class="text-inherit">Order #<%= order._id.toString().slice(-5) %></a>
                                           </td>
                                           <td class="align-middle border-top-0 table-cell-20">
                                              <%= new Date(order.placed_on).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %>
                                           </td>
                                           <td class="align-middle border-top-0 table-cell-20">
+
+                                             <% if(order.payment_status == 'completed'){ %>
                                              <span class="badge bg-success"><%= order.payment_status %></span>
+                                                
+                                             <% } else if(order.payment_status == 'Cancelled'){ %>
+                                                <span class="badge bg-danger"><%= order.payment_status %></span>
+                                             
+                                             <% }else{ %>
+                                             <span class="badge bg-warning"><%= order.payment_status %></span>
+                                                
+                                                <% } %>
                                           </td>
                                           <td class="align-middle border-top-0 table-cell-20">₹ <%= order.total_price %></td>
                                           <td class="align-middle border-top-0 w-0">
@@ -78,7 +88,17 @@
                                              <td class="text-muted align-middle border-top-0 table-cell-20">
                                                 <a href="/invoice/<%= order.id %>" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
                                              </td>
-                                          <% } %>
+                                          <% } else if(order.payment_status == 'Cancelled'){ %>
+                                          
+                                          <% }else{ %>
+                                             
+                                             <td class="text-muted align-middle border-top-0 table-cell-20">
+                                                <form action="/cancelorder" method="post" id="cancel-order-btn">
+                                                   <input type="hidden" name="id" value="<%= order._id %>">
+                                                   <input type="submit" value="Cancel" class="btn btn-danger"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Cancel Order">
+                                                </form>
+                                             </td>
+                                             <% } %>
                                        </tr>
                                      <% }); %>
                                      
@@ -93,67 +113,68 @@
          </section>
       </main>
 
-      <!-- modal -->
-
-      <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasAccount" aria-labelledby="offcanvasAccountLabel">
-         <!-- offcanvas header -->
-         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasAccountLabel">Offcanvas</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-         </div>
-         <!-- offcanvas body -->
-         <div class="offcanvas-body">
-            <ul class="nav flex-column nav-pills nav-pills-dark">
-               <!-- nav item -->
-               <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="account-orders">
-                     <i class="feather-icon icon-shopping-bag me-2"></i>
-                     Your Orders
-                  </a>
-               </li>
-               <!-- nav item -->
-               <li class="nav-item">
-                  <a class="nav-link" href="account-settings">
-                     <i class="feather-icon icon-settings me-2"></i>
-                     Settings
-                  </a>
-               </li>
-               <!-- nav item -->
-               <li class="nav-item">
-                  <a class="nav-link" href="account-address">
-                     <i class="feather-icon icon-map-pin me-2"></i>
-                     Address
-                  </a>
-               </li>
-               <!-- nav item -->
-               <li class="nav-item">
-                  <a class="nav-link" href="account-payment-method">
-                     <i class="feather-icon icon-credit-card me-2"></i>
-                     Payment Method
-                  </a>
-               </li>
-               <!-- nav item -->
-               <li class="nav-item">
-                  <a class="nav-link" href="account-notification">
-                     <i class="feather-icon icon-bell me-2"></i>
-                     Notification
-                  </a>
-               </li>
-            </ul>
-            <hr class="my-6" />
-            <div>
-               <!-- nav  -->
-               <ul class="nav flex-column nav-pills nav-pills-dark">
-                  <!-- nav item -->
-                  <li class="nav-item">
-                     <a class="nav-link" href="../index">
-                        <i class="feather-icon icon-log-out me-2"></i>
-                        Log out
-                     </a>
-                  </li>
-               </ul>
-            </div>
-         </div>
-      </div>
+      
+      <script>
+         document.addEventListener("DOMContentLoaded", function() {
+             // Add event listener to cancel order form
+             const cancelButton = document.getElementById('cancel-order-btn');
+             cancelButton.addEventListener('submit', function(event) {
+                 event.preventDefault(); // Prevent form submission
+      
+                 // Get form and form data
+                 const form = event.target;
+                 const formData = new FormData(form);
+      
+                 // Send AJAX request
+                 fetch('/cancelorder', {
+                     method: 'POST',
+                     body: formData
+                 })
+                 .then(response => response.json())
+                 .then(data => {
+                     if (data.success) {
+                         // Show Toastify success message
+                         Toastify({
+                             text: "Order cancelled successfully!",
+                             duration: 3000,
+                             close: true,
+                             gravity: "top",
+                             position: "right",
+                             backgroundColor: "#4CAF50",
+                         }).showToast();
+      
+                         // Reload the page after a delay (e.g., 1 second)
+                         setTimeout(function() {
+                             location.reload();
+                         }, 1000);
+                     } else {
+                         // Show Toastify error message
+                         Toastify({
+                             text: "Failed to cancel order: " + data.error,
+                             duration: 3000,
+                             close: true,
+                             gravity: "top",
+                             position: "right",
+                             backgroundColor: "#F44336",
+                         }).showToast();
+                     }
+                 })
+                 .catch(error => {
+                     // Handle network errors
+                     console.error('Error:', error);
+                     // Show Toastify error message for network errors
+                     Toastify({
+                         text: "An error occurred. Order Not Found Please try again.",
+                         duration: 3000,
+                         close: true,
+                         gravity: "top",
+                         position: "right",
+                         backgroundColor: "#FF9800",
+                     }).showToast();
+                 });
+             });
+         });
+      </script>
+      
 
 	  <%- include('../include/footer') %>

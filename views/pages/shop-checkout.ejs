@@ -34,7 +34,7 @@
 									<h1 class="fw-bold mb-0">Checkout</h1>
 									<p class="mb-0">
 										Order Placing on 
-										<a href="#!"><%= user.name %></a>
+										<a href="#!"><%= users.name %></a>
 										Account .
 									</p>
 								</div>
@@ -73,13 +73,13 @@
 																	</div>
 																	<!-- address -->
 																	<p class="mb-6">
-																		<%= user.name %>
+																		<%= users.name %>
 																		<br />
-																		<%= user.address %>
+																		<%= users.address %>
 																		<br />
 																		India
 																		<br />
-																		<%= user.phone %>
+																		<%= users.phone %>
 																	</p>
 																	<!-- btn -->
 																	<a href="#" class="btn btn-info btn-sm">Default address</a>
@@ -171,65 +171,93 @@
 										<div class="card shadow-sm">
 											<h5 class="px-6 py-4 bg-transparent mb-0">Order Details</h5>
 											<ul class="list-group list-group-flush">
-												<% cartProducts.forEach(product => { %>
-												<!-- list group item -->
+												
+												<% let totalQuantity = 0;
+												let totalprice = 0;
+												let productsArray = [];
+												%>
+
+												<% product.forEach(product => { %>
+													<% users.cart.forEach(cart => { %>
+														<% if (product._id.toString() == cart.pid.toString()) { %>
+															<% totalQuantity += cart.quantity; %> <!-- Accumulate total quantity -->
+															<% totalprice += (product.discounted_price*cart.quantity); %>
+															 <!-- Loop over cart quantity -->
+																<% let productString = cart.pid + ':' + cart.quantity; %>
+																<% productsArray.push(productString); %> <!-- Push product string to productsArray -->
+															
+															
+																	<!-- list group item -->
 													<li class="list-group-item px-4 py-3">
 														<div class="row align-items-center">
 															<div class="col-2 col-md-2">
-																<img src="../upload/<%= product.image %>" alt="Ecommerce" class="img-fluid" />
+																<img src="../upload/<%= product.image %>" alt="Product" class="img-fluid" />
 															</div>
 															<div class="col-5 col-md-5">
 																<h6 class="mb-0"><%= product.name %></h6>
-																<span><small class="text-muted"><%= product.category %></small></span>
 															</div>
 															<% let quantity = 0; %>
-															<% cartItems.forEach(cartItem => { %>
-																<% if (cartItem.productId.toString() === product._id.toString()) { %>
-																	<% quantity = cartItem.quantity; %>
-																<% } %>
-															<% }); %>
+															
 															<div class="col-2 col-md-2 text-center text-muted">
-																<span><%= quantity %> 
-																<small><% units.forEach(unit => { %>
-																	<% if (unit._id.toString() === product.units.toString()) { %>
+																<span><%= cart.quantity %> </span>																
+																<small><% unit.forEach(unit => { %>
+																	<% if (unit._id.toString() == product.units.toString()) { %>
 																		<%= unit.name?unit.name:''; %>
 																	<% } %>
 																<% }); %></small></span>
 															</div>
 															<div class="col-3 text-lg-end text-start text-md-end col-md-3">
-																<span class="fw-bold">₹ <%= product.discounted_price*quantity %>/-</span>
+																
+																<span class="fw-bold">₹ <%= product.discounted_price*cart.quantity %>/-</span>
 															</div>
 														</div>
-													</li>
+													</li>	
+															<% } %>
+														<% }) %>
 												<% }) %>
+
+												<li class="list-group-item px-4 py-3">
+													<div class="d-flex align-items-center justify-content-between fw-bold">
+														<div>Total Product : <%= totalQuantity %></div>
+														<span class="fw-bold"></span>
+													</div>
+												</li>
 	
 												<!-- list group item -->
 												<li class="list-group-item px-4 py-3">
 													<div class="d-flex align-items-center justify-content-between mb-2">
 														<div>Item Subtotal</div>
-														<div class="fw-bold">₹ <%= carttotalprice %>/-</div>
+														<div class="fw-bold">₹ <%= totalprice %>/-</div>
 													</div>
 													<div class="d-flex align-items-center justify-content-between mb-2">
 														<div>
 															Service Fee
 															<i class="feather-icon icon-info text-muted" data-bs-toggle="tooltip" title="Platform Charges"></i>
 														</div>
-													<span class="fw-bold">₹ <%= fee %>/-</span>
+													<span class="fw-bold">₹ <%= setting[0].serviceFee %>/-</span>
 													</div>
 													<div class="d-flex align-items-center justify-content-between">
 														<div>
-															Delivery Change
+															Delivery Charge
 															<i class="feather-icon icon-info text-muted" data-bs-toggle="tooltip" title="Delivery Change apply below order of 299/-"></i>
 														</div>
-														
-													<span class="fw-bold">₹ <%= delivery_fee %>/-</span>
+														<%
+															let deliveryCharges;
+															if (totalprice > 299) {
+																deliveryCharges = 0;
+															} else {
+																deliveryCharges = setting[0].deliveryCharges;
+															}
+															%>
+															<span class="fw-bold">₹ <%= deliveryCharges %></span>
 													</div>
+													
 												</li>
 												<!-- list group item -->
 												<li class="list-group-item px-4 py-3">
 													<div class="d-flex align-items-center justify-content-between fw-bold">
 														<div>Subtotal</div>
-														<span class="fw-bold">₹ <%= (parseFloat(carttotalprice) + parseFloat(delivery_fee) + parseFloat(fee)).toFixed(2) %>/-</span>
+														<span class="fw-bold">₹ <%= (parseFloat(totalprice) + parseFloat(deliveryCharges) + parseFloat(setting[0].serviceFee)).toFixed(2) %> /-</span>
 													</div>
 												</li>
 											</ul>
@@ -238,15 +266,17 @@
 								</div>
 							</div>
 							<form class="needs-validation" action="/order" method="post">
-								<input type="hidden" name="user_id" value="<%= user._id %>">
-								<input type="hidden" name="name" value="<%= user.name %>">
-								<input type="hidden" name="number" value="<%= user.phone %>">
-								<input type="hidden" name="email" value="<%= user.email %>">
+								<input type="hidden" name="user_id" value="<%= users._id %>">
+								<input type="hidden" name="name" value="<%= users.name %>">
+								<input type="hidden" name="number" value="<%= users.phone %>">
+								<input type="hidden" name="email" value="<%= users.email %>">
 								<input type="hidden" name="method" value="Cash on Delivery">
-								<input type="hidden" name="address" value="<%= user.name %>, <%= user.address %>">
-								<input type="hidden" name="total_products" value="<%= cartProductId %>">
-								<input type="hidden" name="qty" value="<%= cartqty %>">
-								<input type="hidden" name="total_price" value="<%= (parseFloat(carttotalprice) + parseFloat(fee)).toFixed(2) %>">
+								<input type="hidden" name="address" value="<%= users.name %>, <%= users.address %>">
+								<input type="hidden" name="total_products" value="<%= productsArray %>">
+								<input type="hidden" name="total_qty" value="<%= totalQuantity %>">
+								<input type="hidden" name="serviceFee" value="<%= setting[0].serviceFee %>">
+								<input type="hidden" name="deliveryCharges" value="<%= deliveryCharges %>">
+								<input type="hidden" name="total_price" value="<%= (parseFloat(totalprice) + parseFloat(deliveryCharges) + parseFloat(setting[0].serviceFee)).toFixed(2) %>">
 								<input type="hidden" name="placed_on" value="<%= new Date().toISOString() %>">
 								<input type="hidden" name="payment_status" value="In Progress">
 								

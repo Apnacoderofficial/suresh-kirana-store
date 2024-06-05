@@ -3,9 +3,11 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/mainroutes');
-
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 // for session
-const setUserLocals = require('./middlewares/setUserLocals');
+const navbarData = require('./middlewares/navbarData');
+// const setUserLocals = require('./middlewares/setUserLocals');
 const session = require('express-session');
 const crypto = require('crypto');
 
@@ -14,7 +16,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-app.use(setUserLocals.setUserLocals);
+
+app.use(navbarData.navbarData);
+// app.use(setUserLocals.setUserLocals);
 // session
 
 // Parse URL-encoded bodies (as sent by HTML forms)

@@ -38,7 +38,19 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
   total_products: [itemSchema], // Define total_products as an array of items
+  total_qty: {
+    type: Number,
+    required: true
+  },
   total_price: {
+    type: Number,
+    required: true
+  },
+  serviceFee: {
+    type: Number,
+    required: true
+  },
+  deliveryCharges: {
     type: Number,
     required: true
   },
