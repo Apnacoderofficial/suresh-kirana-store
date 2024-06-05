@@ -31,7 +31,7 @@ exports.dashboardIndex = async (req, res) => {
       const [users, completedOrders, cancelledOrders, products, categories] = await Promise.all([
         User.find({ user_type: 'user' }).count(), // Count active users
         Order.find({ payment_status: 'completed' }).count(), // Count completed orders
-        Order.find({ payment_status: 'cancelled' }).count(), // Count cancelled orders
+        Order.find({ payment_status: 'Cancelled' }).count(), // Count cancelled orders
         Product.find().count(), // Count products (assuming Product model exists)
         // Assuming Category model exists, adjust the query if needed
         Category.find().countDocuments(), // Count categories (including subcategories if nested)
