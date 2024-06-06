@@ -159,52 +159,43 @@ exports.addToCart = async (req, res) => {
   });
 };
 
+
+
+
 exports.updateCartQuantity = async (req, res) => {
-  const { productId, action } = req.body;
-  
-  
+  const { productId, quantity } = req.body;
+  console.log(req.body);
+
   try {
     const users = decodeToken(req.cookies.token);
-      let user = await User.findOne({ email: users.email });
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }  
+    let user = await User.findOne({ email: users.email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
-      // Find the index of the product in the user's cart
-      const index = user.cart.findIndex(item => item.pid.toString() === productId);
+    // Find the index of the product in the user's cart
+    const index = user.cart.findIndex(item => item.pid.toString() === productId);
 
-      // If the product is not found in the cart, return an error
-      if (index === -1) {
-          return res.status(404).json({ error: 'Product not found in cart' });
-      }
+    // If the product is not found in the cart, return an error
+    if (index === -1) {
+      return res.status(404).json({ error: 'Product not found in cart' });
+    }
 
-      // Perform the action based on the provided action parameter
-      if (action === 'decrease') {
-          if (user.cart[index].quantity > 1) {
-              user.cart[index].quantity--;
-          } else {
-              // If the quantity is already 1 and the user tries to decrease further,
-              // you might want to remove the item from the cart instead
-              user.cart.splice(index, 1);
-          }
-      } else if (action === 'increase') {
-          user.cart[index].quantity++;
-      } else {
-          // Handle invalid action
-          return res.status(400).json({ error: 'Invalid action' });
-      }
+    // Update the quantity of the product in the cart
+    user.cart[index].quantity = quantity;
 
-      // Save the updated user object
-      await user.save();
+    // Save the updated user document
+    await user.save();
 
-      // Redirect the user back to the cart page
-      res.redirect('/shop-cart');
+    // Return a success message
+    res.status(200).json({ message: 'Cart quantity updated successfully' });
   } catch (error) {
-      // Handle any errors
-      console.error('Error updating cart quantity:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    // Handle any errors
+    console.error('Error updating cart quantity:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
+
 
 
 exports.removeFromCart = async (req, res) => {
@@ -250,7 +241,7 @@ exports.viewInvoice = async (req, res) => {
         productDetails.push({
           image: foundProduct.image,
           name: foundProduct.name,
-          price: foundProduct.price,
+          price: foundProduct.discounted_price,
           quantity: product.quantity
         });
       }

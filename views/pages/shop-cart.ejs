@@ -44,7 +44,7 @@
 									You’ve got FREE delivery. Start
 									<a href="#!" class="alert-link">checkout now!</a>
 								</div> -->
-						<ul class="list-group list-group-flush">
+						<ul class="list-group list-group-flush ">
 
 							<% 
 							let totalprice = 0;
@@ -56,7 +56,7 @@
 							<% if (cartproduct.pid.toString() === productdata._id.toString()) { %>
 								<% totalQuantity += cartproduct.quantity; %> <!-- Accumulate total quantity -->
 															<% totalprice += (productdata.discounted_price*cartproduct.quantity); %>
-							<li class="list-group-item py-3 ps-0">
+							<li class="list-group-item py-3 ps-0  border-bottom">
 								<!-- row -->
 								<div class="row align-items-center">
 									<div class="col-6 col-md-6 col-lg-7">
@@ -95,80 +95,121 @@
 									<% quantity = cartproduct.quantity; %>
 
 									<!-- input group -->
+									<!-- Input group -->
 									<div class="col-4 col-md-3 col-lg-3">
 										<!-- Input spinner for quantity -->
 										<div class="input-group input-spinner">
 											<!-- Decrease quantity button -->
-											<button type="button" class="button-minus btn btn-sm" data-field="quantity"
-												data-productid="<%= productdata._id %>">-</button>
-
+											<button type="button" class="button-minus btn btn-sm" data-action="decrement" data-productid="<%= productdata._id %>">-</button>
+									
 											<!-- Quantity input field -->
-											<input type="number" min="1" max="10" value="<%= quantity %>"
-												name="quantity" id="quantity_<%= productdata._id %>"
-												class="quantity-field form-control-sm form-input" readonly />
-
+											<input type="number" min="1" max="30" value="<%= quantity %>" name="quantity" id="quantity_<%= productdata._id %>" class="quantity-field form-control-sm form-input" data-productid="<%= productdata._id %>" />
+									
 											<!-- Increase quantity button -->
-											<button type="button" class="button-plus btn btn-sm" data-field="quantity"
-												data-productid="<%= productdata._id %>">+</button>
-											<script>
-												$(document).ready(function () {
-													// Flag to indicate whether an AJAX request is in progress
-													let isRequestInProgress = false;
-
-													// Use event delegation to handle click events on .button-minus and .button-plus elements
-													$(document).on('click', '.button-minus', function () {
-														if (!isRequestInProgress) {
-															updateQuantity($(this).data('productid'), 'decrease');
-														}
-													});
-
-													$(document).on('click', '.button-plus', function () {
-														if (!isRequestInProgress) {
-															updateQuantity($(this).data('productid'), 'increase');
-														}
-													});
-
-													// Function to update quantity via AJAX
-													function updateQuantity(productId, action) {
-														// Set the flag to indicate that an AJAX request is in progress
-														isRequestInProgress = true;
-
-														$.ajax({
-															url: '/updateCartQuantity',
-															type: 'POST',
-															data: {
-																productId: productId,
-																action: action
-															},
-															success: function (response) {
-																// Handle success response
-																console.log('Quantity updated successfully:', response);
-																// You can update the UI or perform any other actions here
-
-																// Reload the page to reflect the updated quantity
-																window.location
-															.reload(); // You can also replace this with more specific UI updates
-															},
-															error: function (xhr, status, error) {
-																// Handle error response
-																console.error('Error updating quantity:', error);
-																// Reset the flag even if there's an error
-																isRequestInProgress = false;
-															}
-														});
-													}
-												});
-											</script>
+											<button type="button" class="button-plus btn btn-sm" data-action="increment" data-productid="<%= productdata._id %>">+</button>
+									
+											<!-- Unit display -->
 											<span class="form-control-sm fs-6">
 												<% unit.forEach(unitdata => { %>
-												<% if (unitdata._id.toString() === productdata.units.toString()) { %>
-												<%= unitdata.name?unitdata.name:''; %>
-												<% } %>
+													<% if (unitdata._id.toString() === productdata.units.toString()) { %>
+														<%= unitdata.name ? unitdata.name : ''; %>
+													<% } %>
 												<% }); %>
 											</span>
-
 										</div>
 									</div>
+									
+									<script>
+										document.addEventListener('DOMContentLoaded', () => {
+											document.querySelectorAll('.input-spinner').forEach(inputSpinner => {
+												const quantityInput = inputSpinner.querySelector('.quantity-field');
+									
+												inputSpinner.addEventListener('click', event => {
+													const button = event.target.closest('button');
+													if (!button) return;
+									
+													const action = button.dataset.action;
+													const productId = button.dataset.productid;
+													let currentQuantity = parseInt(quantityInput.value);
+									
+													if (action === 'increment') {
+														Toastify({
+															text: "Quantity Increased",
+															duration: 3000,
+															close: true,
+															gravity: "top",
+															position: "right",
+															backgroundColor: "#4CAF50",
+														}).showToast();
+														if (currentQuantity < parseInt(quantityInput.max)) {
+															currentQuantity++;
+														} else {
+															Toastify({
+																text: "Maximum quantity reached",
+																duration: 3000,
+																close: true,
+																gravity: "top",
+																position: "right",
+																backgroundColor: "#FF0000",
+															}).showToast();
+															return;
+														}
+													} else if (action === 'decrement') {
+														Toastify({
+															text: "Quantity Decreased",
+															duration: 3000,
+															close: true,
+															gravity: "top",
+															position: "right",
+															backgroundColor: "#4CAF50",
+														}).showToast();
+														if (currentQuantity > parseInt(quantityInput.min)) {
+															currentQuantity--;
+														} else {
+															Toastify({
+																text: "Minimum quantity reached",
+																duration: 3000,
+																close: true,
+																gravity: "top",
+																position: "right",
+																backgroundColor: "#FF0000",
+															}).showToast();
+															return;
+														}
+													}
+									
+													quantityInput.value = currentQuantity;
+									
+													console.log(`Current quantity of product ${productId} is ${currentQuantity} and it is ${action === 'increment' ? 'inc' : 'dec'} by 1`);
+													
+													updateQuantity(productId, currentQuantity);
+												});
+											});
+										});
+									
+										function updateQuantity(productId, newQuantity) {
+											console.log(`product id: ${productId} and quantity is ${newQuantity}`);
+											$.ajax({
+												url: '/updateCartQuantity',
+												type: 'POST',
+												data: {
+													productId: productId,
+													quantity: newQuantity
+												},
+												success: function(response) {
+													console.log('Quantity updated successfully:', response);
+												},
+												error: function(xhr, status, error) {
+													console.error('Error updating quantity:', error);
+												}
+											});
+											setTimeout(function(){
+											location.reload();
+										}, 4000);
+										}
+									</script>
+									
+
 
 
 									<!-- price -->
@@ -188,11 +229,7 @@
 								Cart</li>
 							<% } %>
 						</ul>
-						<!-- btn -->
-						<div class="d-flex justify-content-between mt-4">
-							<a href="/shop-checkout" class="btn btn-primary">Continue Shopping</a>
-							<!-- <a href="#!" class="btn btn-dark">Update Cart</a> -->
-						</div>
+						
 					</div>
 				</div>
 
@@ -332,6 +369,9 @@
 
                     // Optionally, remove the item from the DOM
                     document.querySelector(`#product-${productId}`).remove();
+					setTimeout(function() {
+						window.location.reload();
+					}, 3000);
                 } else {
                     Toastify({
                         text: "Failed to remove product from cart: " + data.error,
@@ -354,6 +394,9 @@
                     backgroundColor: "#4CAF50",
                 }).showToast();
             });
+			setTimeout(function() {
+				window.location.reload();
+			}, 3000);
         });
     });
 });

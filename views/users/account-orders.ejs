@@ -59,7 +59,7 @@
                                            <a ><img src="../assets/images/icons/package.svg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
                                          </td>
                                          <td class="align-middle border-top-0 table-cell-20">
-                                            <a class="text-inherit">Order #<%= order._id.toString().slice(-5) %></a>
+                                            <a href="/invoice/<%= order._id %>" class="text-inherit">Order #<%= order._id.toString().slice(-5) %></a>
                                           </td>
                                           <td class="align-middle border-top-0 table-cell-20">
                                              <%= new Date(order.placed_on).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %>

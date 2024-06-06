@@ -74,7 +74,10 @@
                         </div>
                         <!-- button -->
                         <div>
-                           <a href="/account-orders" class="btn btn-primary">Back to all orders</a>
+                           <a href="/account-orders" class="btn btn-primary">Back to my orders</a>
+                           <% if(order.payment_status == 'completed'){ %>
+                           <a href="#" id="downloadInvoice" class="btn btn-secondary">Download Invoice</a>
+                           <% } %>
                         </div>
                      </div>
                   </div>
@@ -83,7 +86,7 @@
                <div class="row shadow border">
                   <div class="col-xl-12 col-12 mb-5">
                      <!-- card -->
-                     <div class="card h-100 card-lg">
+                     <div class="card h-100 card-lg" id="invoice">
                         <div class="card-body p-6">
                            <div class="d-md-flex justify-content-between">
                               <div class="d-flex align-items-center mb-2 mb-md-0">
@@ -93,9 +96,7 @@
                               <!-- select option -->
                               <div class="d-md-flex">
                                  <!-- button -->
-                                 <div class="ms-md-3">
-                                    <a href="#" class="btn btn-secondary">Download Invoice</a>
-                                 </div>
+                                
                               </div>
                            </div>
                            <div class="mt-8">
@@ -143,6 +144,9 @@
                                           <br />
                                           Order Total:
                                           <span class="text-dark">₹ <%= order.total_price %></span>
+                                          <br />
+                                          Order Status:
+                                          <span class="text-dark"><%= order.payment_status %></span>
                                        </p>
                                     </div>
                                  </div>
@@ -172,7 +176,7 @@
                                             <!-- Product Image -->
                                             <td>
                                               <a href="#" class="text-inherit">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-items-end">
                                                   <div>
                                                     <img src="../../upload/<%= product.image %>" alt="" class="icon-shape icon-lg" />
                                                   </div>
@@ -203,18 +207,7 @@
                                              ₹  <%= order.serviceFee %>
                                           </td>
                                        </tr>
-                                       <tr>
-                                          <td class="border-bottom-0 pb-0"></td>
-                                          <td class="border-bottom-0 pb-0"></td>
-                                          <td colspan="1" class="fw-medium text-dark">
-                                             <!-- text -->
-                                             Sub Total :
-                                          </td>
-                                          <td class="fw-medium text-dark">
-                                             <!-- text -->
-                                             ₹ <%= order.total_price %>
-                                          </td>
-                                       </tr>
+                                       
                                        <tr>
                                           <td class="border-bottom-0 pb-0"></td>
                                           <td class="border-bottom-0 pb-0"></td>
@@ -264,6 +257,20 @@
             </div>
          </main>
       </div>
+      <!-- Include html2pdf.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script>
+document.getElementById('downloadInvoice').addEventListener('click', function () {
+    const element = document.getElementById('invoice');
+    html2pdf(element, {
+        margin: 0.5, // Smaller margin
+        filename: `invoice_<%= order._id.toString().slice(-5) %>.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } // A4 size paper
+    });
+});
+</script>
 
       <!-- Libs JS -->
 <!-- <script src="../assets/libs/jquery/dist/jquery.min.js"></script> -->

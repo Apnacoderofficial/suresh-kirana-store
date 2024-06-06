@@ -79,7 +79,7 @@
             <td>
                 <a href="#!"><img src="../assets/images/icons/package.svg" alt="" class="icon-shape icon-md" /></a>
             </td>
-            <td><a href="#" class="text-reset">Order #<%= order._id.toString().slice(-5) %></a></td>
+            <td><a href="/dashboard/order-single?orderId=<%= order._id %>" class="text-reset">Order #<%= order._id.toString().slice(-5) %></a></td>
 
             <td><%= order.name %></td>
             <td><%= new Date(order.placed_on).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %></td>

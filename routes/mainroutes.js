@@ -133,6 +133,6 @@ router.get('/dashboard/editorder',  checkAuth, adminconttroller.editorder);
 router.post('/dashboard/editorder',  checkAuth, adminconttroller.editorder);
 router.get('/dashboard/deleteorder/:id',  checkAuth, adminconttroller.deleteorder);
 // Route to handle updating cart quantity
-router.post('/updateCartQuantity',mainController.updateCartQuantity );
+router.post('/updateCartQuantity', mainController.updateCartQuantity);
 
 module.exports = router;

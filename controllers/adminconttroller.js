@@ -28,9 +28,10 @@ exports.dashboardIndex = async (req, res) => {
     try {
       // Fetch relevant data
       const orders = await Order.find();
-      const [users, completedOrders, cancelledOrders, products, categories] = await Promise.all([
+      const [users, completedOrders,inprogressOrders, cancelledOrders, products, categories] = await Promise.all([
         User.find({ user_type: 'user' }).count(), // Count active users
         Order.find({ payment_status: 'completed' }).count(), // Count completed orders
+        Order.find({ payment_status: 'In Progress' }).count(),
         Order.find({ payment_status: 'Cancelled' }).count(), // Count cancelled orders
         Product.find().count(), // Count products (assuming Product model exists)
         // Assuming Category model exists, adjust the query if needed
@@ -45,6 +46,7 @@ exports.dashboardIndex = async (req, res) => {
       res.render('dashboard/index', {
         totalActiveUsers: users,
         totalCompletedOrders: completedOrders,
+        totalinprogressOrders: inprogressOrders,
         totalCancelledOrders: cancelledOrders,
         totalProducts: products,
         totalCategoriesAndSubcategories: categories, // Assuming categories include subcategories
@@ -134,9 +136,50 @@ exports.dashboardOrderList = async (req, res) => {
 
 exports.dashboardOrderSingle = (req, res) => {
   checkAuth(req, res, async () => {
-    res.render('dashboard/order-single');
+    try {
+      const invoiceId = req.query.orderId;
+      const setting = await Settings.find().limit(1);
+  
+      // Find the order by orderId
+      const order = await Order.findOne({ _id: invoiceId });
+  
+      // Check if the order exists
+      if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+  
+      // Create an array to store product details
+      const productDetails = [];
+  
+      // Loop through each product in the order's total_products array
+      for (const product of order.total_products) {
+        // Find the product by pid in the product table
+        const foundProduct = await Product.findOne({ _id: product.pid });
+  
+        // If product is found, add its details to the productDetails array
+        if (foundProduct) {
+          productDetails.push({
+            image: foundProduct.image,
+            name: foundProduct.name,
+            price: foundProduct.discounted_price,
+            quantity: product.quantity
+          });
+        }
+      }
+      
+      // Decode the token to find the user
+      const user = await User.findOne({ email: decodeToken(req.cookies.token).email });
+      
+      // Render the page with order, productDetails, and user information
+      res.render('dashboard/order-single', { order, productDetails, user });
+    } catch (error) {
+      // Handle any errors
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   });
 };
+
 
 // product
 exports.addProduct = (req, res) => {
