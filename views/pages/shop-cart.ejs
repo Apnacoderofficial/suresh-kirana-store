@@ -36,7 +36,7 @@
 				</div>
 			</div>
 			<!-- row -->
-			<div class="row">
+			<div class="row" id="full-div">
 				<div class="col-lg-8 col-md-7">
 					<div class="py-3">
 						<!-- alert -->
@@ -122,64 +122,34 @@
 									<script>
 										document.addEventListener('DOMContentLoaded', () => {
 											document.querySelectorAll('.input-spinner').forEach(inputSpinner => {
-												const quantityInput = inputSpinner.querySelector('.quantity-field');
-									
 												inputSpinner.addEventListener('click', event => {
 													const button = event.target.closest('button');
 													if (!button) return;
 									
+													const quantityInput = inputSpinner.querySelector('.quantity-field');
 													const action = button.dataset.action;
 													const productId = button.dataset.productid;
 													let currentQuantity = parseInt(quantityInput.value);
 									
 													if (action === 'increment') {
-														Toastify({
-															text: "Quantity Increased",
-															duration: 3000,
-															close: true,
-															gravity: "top",
-															position: "right",
-															backgroundColor: "#4CAF50",
-														}).showToast();
 														if (currentQuantity < parseInt(quantityInput.max)) {
 															currentQuantity++;
+															showToast("Quantity Increased", "#4CAF50");
 														} else {
-															Toastify({
-																text: "Maximum quantity reached",
-																duration: 3000,
-																close: true,
-																gravity: "top",
-																position: "right",
-																backgroundColor: "#FF0000",
-															}).showToast();
+															showToast("Maximum quantity reached", "#FF0000");
 															return;
 														}
 													} else if (action === 'decrement') {
-														Toastify({
-															text: "Quantity Decreased",
-															duration: 3000,
-															close: true,
-															gravity: "top",
-															position: "right",
-															backgroundColor: "#4CAF50",
-														}).showToast();
 														if (currentQuantity > parseInt(quantityInput.min)) {
 															currentQuantity--;
+															showToast("Quantity Decreased", "#4CAF50");
 														} else {
-															Toastify({
-																text: "Minimum quantity reached",
-																duration: 3000,
-																close: true,
-																gravity: "top",
-																position: "right",
-																backgroundColor: "#FF0000",
-															}).showToast();
+															showToast("Minimum quantity reached", "#FF0000");
 															return;
 														}
 													}
 									
 													quantityInput.value = currentQuantity;
-									
 													console.log(`Current quantity of product ${productId} is ${currentQuantity} and it is ${action === 'increment' ? 'inc' : 'dec'} by 1`);
 													
 													updateQuantity(productId, currentQuantity);
@@ -187,8 +157,14 @@
 											});
 										});
 									
+										let isRequestInProgress = false;
+									
 										function updateQuantity(productId, newQuantity) {
+											if (isRequestInProgress) return;
+									
+											isRequestInProgress = true;
 											console.log(`product id: ${productId} and quantity is ${newQuantity}`);
+											
 											$.ajax({
 												url: '/updateCartQuantity',
 												type: 'POST',
@@ -198,16 +174,23 @@
 												},
 												success: function(response) {
 													console.log('Quantity updated successfully:', response);
+													setTimeout(() => {
+														location.reload();
+													}, 4000);
 												},
 												error: function(xhr, status, error) {
 													console.error('Error updating quantity:', error);
+												},
+												complete: function() {
+													isRequestInProgress = false;
 												}
 											});
-											setTimeout(function(){
-											location.reload();
-										}, 4000);
 										}
+								
 									</script>
+									
+									
+
 									
 
 
@@ -411,4 +394,20 @@ function updateCartUI(updatedCart) {
 }
 
 </script>
+<script>
+		
+		function showToast(message, backgroundColor) {
+											Toastify({
+												text: message,
+												duration: 3000,
+												close: true,
+												gravity: "top",
+												position: "right",
+												backgroundColor: backgroundColor,
+											}).showToast();
+										}
+</script>
+
+
+
 <%- include('../include/footer') %>

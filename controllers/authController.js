@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 const mailer = require('./emailsender');
-const toastMessage = require('./toastMessage');
 
 
 const generateAccessToken = (payload) => {

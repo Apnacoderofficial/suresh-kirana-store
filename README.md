@@ -43,4 +43,8 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 
 - FIXED ISSUE IN ADMIN DASHBOARD OF CANCELLED COUNT
 
+## Suresh Kirana Store v1.2.2
+
+- FIXED ISSUE IN ADMIN DASHBOARD  and update increment and decrement issues in shop cart 
+
 
