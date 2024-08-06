@@ -108,13 +108,6 @@ exports.error404 = (req, res) => {
 
 
 
-
-
-
-
-
-
-
 // All Post 
 exports.addToCart = async (req, res) => {
   // Check user authentication using checkAuth middleware
@@ -160,41 +153,42 @@ exports.addToCart = async (req, res) => {
 };
 
 
-
-
 exports.updateCartQuantity = async (req, res) => {
   const { productId, quantity } = req.body;
-  console.log(req.body);
 
   try {
     const users = decodeToken(req.cookies.token);
     let user = await User.findOne({ email: users.email });
+
     if (!user) {
+      console.error('User not found:', users.email);
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Find the index of the product in the user's cart
     const index = user.cart.findIndex(item => item.pid.toString() === productId);
 
-    // If the product is not found in the cart, return an error
     if (index === -1) {
+      console.error('Product not found in cart:', productId);
       return res.status(404).json({ error: 'Product not found in cart' });
     }
 
-    // Update the quantity of the product in the cart
-    user.cart[index].quantity = quantity;
+    if (quantity < 1) {
+      console.error('Invalid quantity:', quantity);
+      return res.status(400).json({ error: 'Invalid quantity' });
+    }
 
-    // Save the updated user document
+    user.cart[index].quantity = quantity;
     await user.save();
 
-    // Return a success message
+    console.log('Cart quantity updated successfully for user:', user.email);
     res.status(200).json({ message: 'Cart quantity updated successfully' });
   } catch (error) {
-    // Handle any errors
     console.error('Error updating cart quantity:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
 
 
 
