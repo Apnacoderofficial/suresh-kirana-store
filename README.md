@@ -51,4 +51,7 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 
 - FIXED SEARCH BAR
 
+## Suresh Kirana Store v1.2.4
+
+- FIXED SEARCH BAR and qunatity functions
 
