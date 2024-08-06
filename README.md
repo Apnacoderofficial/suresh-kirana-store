@@ -47,4 +47,8 @@ Feel free to contribute by submitting bug reports, feature requests, or pull req
 
 - FIXED ISSUE IN ADMIN DASHBOARD  and update increment and decrement issues in shop cart 
 
+## Suresh Kirana Store v1.2.3
+
+- FIXED SEARCH BAR
+
 
